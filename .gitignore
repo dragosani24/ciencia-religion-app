@@ -31,7 +31,7 @@ dev.db-journal
 
 # Archivos pesados y scripts generados
 *.pdf
-init_data.sql
+# init_data.sql
 
 # Logs
 npm-debug.log*

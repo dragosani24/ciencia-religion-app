@@ -8,7 +8,7 @@ export default function Navbar() {
     <nav className="navbar">
       <div className="nav-content">
         <Link href="/" className="logo">
-          Ciencia y Religión <span className="logo-subtitle">Social</span>
+          Jesus Ceballos Dosamantes - Ciencia y Religión del Porvenir
         </Link>
 
         <div className="auth-section">
@@ -44,25 +44,12 @@ export default function Navbar() {
           box-shadow: 0 2px 10px rgba(0,0,0,0.2);
         }
         .nav-content {
-          max-width: 900px;
+          max-width: 100%;
           margin: 0 auto;
           display: flex;
           justify-content: space-between;
           align-items: center;
           padding: 0 20px;
-        }
-        .logo {
-          font-family: 'Georgia', serif;
-          font-weight: bold;
-          font-size: 1.4rem;
-          color: #d4af37; /* Dorado académico */
-          text-decoration: none;
-        }
-        .logo-subtitle {
-          color: #fff;
-          font-size: 0.9rem;
-          font-weight: normal;
-          opacity: 0.8;
         }
         .auth-section {
           display: flex;
@@ -114,6 +101,19 @@ export default function Navbar() {
         .logout-btn:hover {
           color: white;
           border-color: white;
+        }
+      `}</style>
+      <style jsx global>{`
+        .logo,
+        .logo:link,
+        .logo:visited,
+        .logo:hover,
+        .logo:active {
+          font-family: 'Georgia', serif !important;
+          font-weight: bold !important;
+          font-size: 1.4rem !important;
+          color: #f8f7f3ff !important;
+          text-decoration: none !important;
         }
       `}</style>
     </nav>

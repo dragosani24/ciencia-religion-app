@@ -80,7 +80,7 @@ export default function Home({ chapters }) {
         }
 
         .header-content {
-          max-width: 1400px;
+          max-width: 100%;
           margin: 0 auto;
           display: flex;
           justify-content: space-between;
@@ -182,6 +182,15 @@ export default function Home({ chapters }) {
           background: #343536;
           border-radius: 4px;
         }
+        
+        .sidebar h1 {
+          font-size: 1rem;
+          padding: 1rem 1rem 0.5rem;
+          color: #818384;
+          font-weight: 600;
+          text-transform: uppercase;
+          letter-spacing: 0.5px;
+        }
 
         .sidebar h2 {
           font-size: 0.75rem;
@@ -233,7 +242,7 @@ export default function Home({ chapters }) {
           flex: 1;
           padding: 1.5rem 2rem;
           min-width: 0;
-          max-width: calc(100% - 280px);
+          max-width: 100%;
           background: #030303;
         }
 
@@ -245,7 +254,7 @@ export default function Home({ chapters }) {
         }
 
         .paragraph-card {
-          background: #1a1a1b;
+          background: #0e1217;
           padding: 1rem;
           margin-bottom: 0.8rem;
           border-radius: 4px;
@@ -258,7 +267,7 @@ export default function Home({ chapters }) {
         }
 
         .paragraph-content {
-          font-size: 0.95rem;
+          font-size: 17px;
           line-height: 1.6;
           margin-bottom: 0.8rem;
           color: #d7dadc;
@@ -401,9 +410,9 @@ export default function Home({ chapters }) {
         }
       `}</style>
 
-      <div className="header">
+      {/* <div className="header">
         <div className="header-content">
-          <h1>Ciencia y Religión - Análisis Social</h1>
+          <h1>Ciencia y Religión del Porvenir</h1>
           <div className="auth-section">
             {!session ? (
               <button onClick={() => signIn('google')} className="btn btn-login">
@@ -420,12 +429,12 @@ export default function Home({ chapters }) {
             )}
           </div>
         </div>
-      </div>
+      </div> */}
 
       <div className="container">
         <div className="layout">
           <aside className="sidebar">
-            <h2>Capítulos</h2>
+            <h1>Capítulos</h1>
             <ul className="chapter-list">
               <li 
                 className={`chapter-item ${!selectedChapter ? 'all' : ''}`}

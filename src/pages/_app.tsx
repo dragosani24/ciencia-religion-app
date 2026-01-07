@@ -30,9 +30,9 @@ function MyApp({ Component, pageProps: { session, ...pageProps } }: AppProps) {
           color: #2c2c2c;
         }
         .app-container {
-          max-width: 800px;
-          margin: 0 auto;
-          padding: 20px;
+          max-width: 100%;
+          margin: 0;
+          padding: 0;
         }
       `}</style>
         </SessionProvider>
