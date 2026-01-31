@@ -1,0 +1,46 @@
+version: '3.8'
+
+services:
+  # 1. Base de Datos MySQL
+  db:
+    image: mysql:8.0
+    container_name: mysql_ciencia_religion
+    restart: always
+    environment:
+      MYSQL_DATABASE: ciencia_religion_db
+      MYSQL_ROOT_PASSWORD: secret # Cambia por una contraseña segura
+      MYSQL_USER: user_admin
+      MYSQL_PASSWORD: secret
+    ports:
+      - "42341:3306" # Acceso externo (Host: 42341 -> Contenedor: 3306)
+    volumes:
+      - db_data:/var/lib/mysql
+      # Ejecuta automáticamente los scripts de tablas y datos al iniciar
+      - ./init.sql:/docker-entrypoint-initdb.d/1-schema.sql
+      - ./init_data.sql:/docker-entrypoint-initdb.d/2-data.sql
+
+  # 2. Aplicación Web (Next.js)
+  web:
+    build: .
+    container_name: app_ciencia_religion
+    restart: always
+    ports:
+      - "3005:3000" # Acceso Web (Host: 3001 -> Contenedor: 3000)
+    env_file: .env # Carga GOOGLE_CLIENT_ID, SECRET, etc.
+    environment:
+      # URL de conexión interna (usa el nombre del servicio 'db' y puerto 3306)
+      - DATABASE_URL=mysql://user_admin:secret@db:3306/ciencia_religion_db
+      - NEXTAUTH_URL=http://localhost:3005
+    depends_on:
+      - db
+
+  # 3. Gestor de Base de Datos (Adminer)
+  adminer:
+    image: adminer
+    container_name: adminer_db
+    restart: always
+    ports:
+      - "42340:8080" # Acceso Adminer (Host: 42340 -> Contenedor: 8080)
+
+volumes:
+  db_data: # Volumen persistente para que no se borren tus comentarios al apagar Docker
