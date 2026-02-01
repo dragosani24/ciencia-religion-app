@@ -1,0 +1,24 @@
+# Dockerfile para desarrollo con hot reload
+FROM node:18-alpine
+
+WORKDIR /app
+
+# Instalar OpenSSL para Prisma
+RUN apk add --no-cache openssl libc6-compat
+
+# Copiar archivos de dependencias
+COPY package*.json ./
+COPY prisma ./prisma
+
+# Instalar dependencias
+RUN npm install
+
+# Generar Prisma client
+RUN npx prisma generate
+
+# El código se montará como volumen, no se copia aquí
+
+EXPOSE 3000
+
+# Ejecutar en modo desarrollo
+CMD ["npm", "run", "dev"]

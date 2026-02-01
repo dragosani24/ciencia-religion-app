@@ -19,18 +19,32 @@ services:
       - ./init.sql:/docker-entrypoint-initdb.d/1-schema.sql
       - ./init_data.sql:/docker-entrypoint-initdb.d/2-data.sql
 
-  # 2. Aplicación Web (Next.js)
+  # 2. Aplicación Web (Next.js) - Modo Desarrollo
   web:
-    build: .
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
     container_name: app_ciencia_religion
     restart: always
     ports:
-      - "3005:3000" # Acceso Web (Host: 3001 -> Contenedor: 3000)
+      - "3005:3000" # Acceso Web (Host: 3005 -> Contenedor: 3000)
     env_file: .env # Carga GOOGLE_CLIENT_ID, SECRET, etc.
     environment:
       # URL de conexión interna (usa el nombre del servicio 'db' y puerto 3306)
       - DATABASE_URL=mysql://user_admin:secret@db:3306/ciencia_religion_db
       - NEXTAUTH_URL=http://localhost:3005
+      - WATCHPACK_POLLING=true # Habilita polling para hot reload
+    volumes:
+      # Montar el código fuente para hot reload
+      - ./src:/app/src
+      - ./public:/app/public
+      - ./prisma:/app/prisma
+      - ./package.json:/app/package.json
+      - ./tsconfig.json:/app/tsconfig.json
+      - ./next-env.d.ts:/app/next-env.d.ts
+      # Excluir carpetas del contenedor para no sobrescribirlas
+      - /app/node_modules
+      - /app/.next
     depends_on:
       - db
 
