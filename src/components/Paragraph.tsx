@@ -15,9 +15,12 @@ interface ParagraphProps {
   content: string;
   comments?: Comment[];
   onDelete?: () => void;
+  onReorder?: (direction: 'up' | 'down') => void;
+  canMoveUp?: boolean;
+  canMoveDown?: boolean;
 }
 
-export default function Paragraph({ id, content, comments: initialComments = [], onDelete }: ParagraphProps) {
+export default function Paragraph({ id, content, comments: initialComments = [], onDelete, onReorder, canMoveUp = true, canMoveDown = true }: ParagraphProps) {
   const { data: session } = useSession();
   const [showComments, setShowComments] = useState(false);
   const [comments, setComments] = useState(initialComments);
@@ -114,6 +117,26 @@ export default function Paragraph({ id, content, comments: initialComments = [],
           
           {session && !isEditing && (
             <>
+              {onReorder && (
+                <>
+                  <button 
+                    onClick={() => onReorder('up')} 
+                    className="order-btn"
+                    disabled={!canMoveUp}
+                    title="Mover arriba"
+                  >
+                    ⬆️
+                  </button>
+                  <button 
+                    onClick={() => onReorder('down')} 
+                    className="order-btn"
+                    disabled={!canMoveDown}
+                    title="Mover abajo"
+                  >
+                    ⬇️
+                  </button>
+                </>
+              )}
               <button onClick={() => {
                 setIsEditing(true);
                 setEditedContent(currentContent);

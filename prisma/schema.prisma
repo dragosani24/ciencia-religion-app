@@ -19,6 +19,7 @@ model Chapter {
 model Paragraph {
   id        Int       @id @default(autoincrement())
   content   String    @db.Text
+  order     Int       @default(0)
   chapterId Int       @map("chapter_id")
   chapter   Chapter   @relation(fields: [chapterId], references: [id])
   comments  Comment[]

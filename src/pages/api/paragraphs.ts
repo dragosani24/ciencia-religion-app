@@ -19,10 +19,19 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         return res.status(400).json({ error: 'Contenido y capítulo son requeridos' });
       }
 
+      // Obtener el último order del capítulo
+      const lastParagraph = await prisma.paragraph.findFirst({
+        where: { chapterId: parseInt(chapterId) },
+        orderBy: { order: 'desc' },
+      });
+
+      const newOrder = lastParagraph ? lastParagraph.order + 1 : 0;
+
       const paragraph = await prisma.paragraph.create({
         data: {
           content,
           chapterId: parseInt(chapterId),
+          order: newOrder,
         },
       });
 

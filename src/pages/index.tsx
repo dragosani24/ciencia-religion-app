@@ -27,6 +27,31 @@ export default function Home({ chapters: initialChapters }) {
     }, 100);
   };
 
+  const handleReorder = async (chapterId: number, paragraphId: number, direction: 'up' | 'down') => {
+    try {
+      const res = await fetch('/api/paragraphs/reorder', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ paragraphId, direction }),
+      });
+
+      if (res.ok) {
+        // Recargar los datos del capítulo para obtener el nuevo orden
+        const response = await fetch(`/api/chapters/${chapterId}`);
+        if (response.ok) {
+          const updatedChapter = await response.json();
+          setChapters(prevChapters =>
+            prevChapters.map(chapter =>
+              chapter.id === chapterId ? updatedChapter : chapter
+            )
+          );
+        }
+      }
+    } catch (error) {
+      console.error('Error reordering paragraph:', error);
+    }
+  };
+
   const filteredChapters = selectedChapter 
     ? chapters.filter(c => c.id === selectedChapter)
     : chapters;
@@ -66,12 +91,15 @@ export default function Home({ chapters: initialChapters }) {
                   />
                 </h2>
                 
-                {chapter.paragraphs.map(paragraph => (
+                {chapter.paragraphs.map((paragraph, index) => (
                   <div key={paragraph.id} id={`paragraph-${paragraph.id}`}>
                     <Paragraph
                       id={paragraph.id}
                       content={paragraph.content}
                       comments={paragraph.comments || []}
+                      onReorder={(direction) => handleReorder(chapter.id, paragraph.id, direction)}
+                      canMoveUp={index > 0}
+                      canMoveDown={index < chapter.paragraphs.length - 1}
                     />
                   </div>
                 ))}
@@ -88,6 +116,7 @@ export async function getServerSideProps() {
     const chapters = await prisma.chapter.findMany({
       include: {
         paragraphs: {
+          orderBy: { order: 'asc' },
           include: {
             comments: {
               include: {
