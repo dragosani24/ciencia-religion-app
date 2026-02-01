@@ -13,10 +13,11 @@ interface Comment {
 interface ParagraphProps {
   id: number;
   content: string;
-  comments: Comment[];
+  comments?: Comment[];
+  onDelete?: () => void;
 }
 
-export default function Paragraph({ id, content, comments: initialComments }: ParagraphProps) {
+export default function Paragraph({ id, content, comments: initialComments = [], onDelete }: ParagraphProps) {
   const { data: session } = useSession();
   const [showComments, setShowComments] = useState(false);
   const [comments, setComments] = useState(initialComments);
@@ -24,6 +25,7 @@ export default function Paragraph({ id, content, comments: initialComments }: Pa
   const [isEditing, setIsEditing] = useState(false);
   const [currentContent, setCurrentContent] = useState(content);
   const [editedContent, setEditedContent] = useState(content);
+  const [isDeleted, setIsDeleted] = useState(false);
 
   const handleSubmitComment = async () => {
     if (!newComment.trim()) return;
@@ -67,9 +69,16 @@ export default function Paragraph({ id, content, comments: initialComments }: Pa
     });
 
     if (res.ok) {
-      window.location.reload();
+      setIsDeleted(true);
+      if (onDelete) {
+        onDelete();
+      }
     }
   };
+
+  if (isDeleted) {
+    return null;
+  }
 
   return (
     <div className="paragraph-card">

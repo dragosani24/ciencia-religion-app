@@ -4,9 +4,28 @@ import { useState } from "react";
 import AddParagraph from "../components/AddParagraph";
 import Paragraph from "../components/Paragraph";
 
-export default function Home({ chapters }) {
+export default function Home({ chapters: initialChapters }) {
   const { data: session } = useSession();
   const [selectedChapter, setSelectedChapter] = useState(null);
+  const [chapters, setChapters] = useState(initialChapters);
+
+  const handleParagraphAdded = (chapterId: number, newParagraph: any) => {
+    setChapters(prevChapters => 
+      prevChapters.map(chapter => 
+        chapter.id === chapterId
+          ? { ...chapter, paragraphs: [...chapter.paragraphs, newParagraph] }
+          : chapter
+      )
+    );
+    
+    // Scroll al nuevo párrafo después de un pequeño delay
+    setTimeout(() => {
+      const element = document.getElementById(`paragraph-${newParagraph.id}`);
+      if (element) {
+        element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+    }, 100);
+  };
 
   const filteredChapters = selectedChapter 
     ? chapters.filter(c => c.id === selectedChapter)
@@ -41,16 +60,20 @@ export default function Home({ chapters }) {
               <div key={chapter.id}>
                 <h2 className="chapter-title">
                   {chapter.title}
-                  <AddParagraph chapterId={chapter.id} />
+                  <AddParagraph 
+                    chapterId={chapter.id} 
+                    onSuccess={(newParagraph) => handleParagraphAdded(chapter.id, newParagraph)}
+                  />
                 </h2>
                 
                 {chapter.paragraphs.map(paragraph => (
-                  <Paragraph
-                    key={paragraph.id}
-                    id={paragraph.id}
-                    content={paragraph.content}
-                    comments={paragraph.comments}
-                  />
+                  <div key={paragraph.id} id={`paragraph-${paragraph.id}`}>
+                    <Paragraph
+                      id={paragraph.id}
+                      content={paragraph.content}
+                      comments={paragraph.comments || []}
+                    />
+                  </div>
                 ))}
               </div>
             ))}

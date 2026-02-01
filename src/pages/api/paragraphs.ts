@@ -26,7 +26,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         },
       });
 
-      return res.status(201).json(paragraph);
+      return res.status(201).json({ ...paragraph, comments: [] });
     } catch (error) {
       console.error('Error creating paragraph:', error);
       return res.status(500).json({ error: 'Error al crear el párrafo' });

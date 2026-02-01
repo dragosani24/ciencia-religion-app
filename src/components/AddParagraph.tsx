@@ -3,7 +3,7 @@ import { useSession } from 'next-auth/react';
 
 interface AddParagraphProps {
   chapterId: number;
-  onSuccess?: () => void;
+  onSuccess?: (newParagraph: any) => void;
 }
 
 export default function AddParagraph({ chapterId, onSuccess }: AddParagraphProps) {
@@ -28,12 +28,11 @@ export default function AddParagraph({ chapterId, onSuccess }: AddParagraphProps
       });
 
       if (res.ok) {
+        const newParagraph = await res.json();
         setNewContent("");
         setIsAdding(false);
         if (onSuccess) {
-          onSuccess();
-        } else {
-          window.location.reload();
+          onSuccess(newParagraph);
         }
       }
     } catch (error) {
