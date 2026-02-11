@@ -10,6 +10,8 @@ export default function AddParagraph({ chapterId, onSuccess }: AddParagraphProps
   const { data: session } = useSession();
   const [isAdding, setIsAdding] = useState(false);
   const [newContent, setNewContent] = useState("");
+  const [newChapterId, setNewChapterId] = useState(chapterId.toString());
+  const [newOrder, setNewOrder] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleAddParagraph = async () => {
@@ -23,12 +25,15 @@ export default function AddParagraph({ chapterId, onSuccess }: AddParagraphProps
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ 
           content: newContent,
-          chapterId: chapterId 
+          chapterId: parseInt(newChapterId),
+          order: newOrder ? parseInt(newOrder) : undefined
         }),
       });
 
       if (res.ok) {
         const newParagraph = await res.json();
+        setNewChapterId(chapterId.toString());
+        setNewOrder("");
         setNewContent("");
         setIsAdding(false);
         if (onSuccess) {
@@ -57,6 +62,27 @@ export default function AddParagraph({ chapterId, onSuccess }: AddParagraphProps
         <div className="add-paragraph-modal">
           <div className="add-paragraph-form">
             <h3>Agregar nuevo párrafo</h3>
+            <div className="form-field">
+              <label htmlFor="chapter-id">Capítulo ID:</label>
+              <input
+                id="chapter-id"
+                type="number"
+                value={newChapterId}
+                onChange={(e) => setNewChapterId(e.target.value)}
+                className="input-field"
+              />
+            </div>
+            <div className="form-field">
+              <label htmlFor="order">Orden:</label>
+              <input
+                id="order"
+                type="number"
+                value={newOrder}
+                onChange={(e) => setNewOrder(e.target.value)}
+                placeholder="Dejar vacío para agregar al final"
+                className="input-field"
+              />
+            </div>
             <textarea
               value={newContent}
               onChange={(e) => setNewContent(e.target.value)}
@@ -76,6 +102,8 @@ export default function AddParagraph({ chapterId, onSuccess }: AddParagraphProps
                 onClick={() => {
                   setIsAdding(false);
                   setNewContent("");
+                  setNewChapterId(chapterId.toString());
+                  setNewOrder("");
                 }} 
                 className="btn-cancel"
                 disabled={isSubmitting}

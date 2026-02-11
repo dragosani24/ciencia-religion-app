@@ -268,6 +268,41 @@ body.modal-open {
   font-size: 1.2rem;
 }
 
+.form-field {
+  margin-bottom: 1rem;
+}
+
+.form-field label {
+  display: block;
+  color: #d7dadc;
+  font-size: 0.9rem;
+  font-weight: 500;
+  margin-bottom: 0.5rem;
+}
+
+.input-field {
+  width: 100%;
+  padding: 0.6rem 0.8rem;
+  font-size: 0.95rem;
+  border: 1px solid #343536;
+  background: #272729;
+  color: #d7dadc;
+  border-radius: 4px;
+  font-family: inherit;
+  transition: all 0.2s;
+}
+
+.input-field:focus {
+  outline: none;
+  border-color: #0c71c7;
+  background: #1a1a1b;
+}
+
+.input-field::placeholder {
+  color: #818384;
+  font-style: italic;
+}
+
 .paragraph-card {
   background: #0e1217;
   padding: 1rem;
