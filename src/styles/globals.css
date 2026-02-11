@@ -16,6 +16,11 @@ body {
   min-height: 100vh;
 }
 
+body.modal-open {
+  overflow: hidden;
+  padding-right: var(--scrollbar-width, 0px);
+}
+
 .container {
   width: 100%;
   padding: 0;
