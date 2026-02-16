@@ -1,13 +1,19 @@
 import { useState } from 'react';
 import { useSession } from 'next-auth/react';
+import CommentList from './CommentList';
+
+interface User {
+  id: string;
+  name: string;
+  image: string;
+}
 
 interface Comment {
   id: number;
   content: string;
-  user: {
-    name: string;
-    image: string;
-  };
+  createdAt: Date | string;
+  user: User;
+  userId: string;
 }
 
 interface ParagraphProps {
@@ -33,7 +39,6 @@ export default function Paragraph({ id, content, comments: initialComments = [],
   const handleSubmitComment = async () => {
     if (!newComment.trim()) return;
 
-    // Lógica para enviar el comentario a la API
     const res = await fetch('/api/comments', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -44,6 +49,19 @@ export default function Paragraph({ id, content, comments: initialComments = [],
       const savedComment = await res.json();
       setComments([...comments, savedComment]);
       setNewComment("");
+    }
+  };
+
+  const handleCommentsUpdated = async () => {
+    // Recargar los comentarios desde el servidor
+    try {
+      const res = await fetch(`/api/paragraphs/${id}`);
+      if (res.ok) {
+        const data = await res.json();
+        setComments(data.comments || []);
+      }
+    } catch (error) {
+      console.error('Error al recargar comentarios:', error);
     }
   };
 
@@ -154,21 +172,7 @@ export default function Paragraph({ id, content, comments: initialComments = [],
       {/* Sección de comentarios (Social) */}
       {showComments && (
         <div className="comments-section">
-          {comments.length > 0 ? (
-            comments.map((c) => (
-              <div key={c.id} className="comment">
-                <div className="comment-header">
-                  {c.user.image && (
-                    <img src={c.user.image} alt="" className="comment-avatar" />
-                  )}
-                  <span className="comment-author">{c.user.name}</span>
-                </div>
-                <div className="comment-content">{c.content}</div>
-              </div>
-            ))
-          ) : (
-            <p className="no-comments">No hay comentarios aún</p>
-          )}
+          <CommentList comments={comments} onCommentUpdated={handleCommentsUpdated} />
 
           {session ? (
             <div className="comment-form">
